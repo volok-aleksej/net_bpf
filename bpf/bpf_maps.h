@@ -26,14 +26,14 @@ struct bpf_map_def SEC("maps") BPF_MONITOR_MAP = {
 #define MASK_MTU 0x7ff
 #define LOG_BUFFER_SIZE 2048
 
-#define FRAG_INFO_MAP_SIZE 64
+#define FRAG_INFO_MAP_SIZE 1000
 #define FRAG_DATA_MAP_SIZE FRAG_INFO_MAP_SIZE*(MAX_FRAGMENTS)
 
 struct fragment_info
 {
     __u8 checked;
     __u16 if_index;
-    __u32 node_id;
+    __u16 node_id;
 };
 
 struct fragment_data
@@ -52,11 +52,9 @@ struct ebpf_context
     // common data
     enum {
         DEFAULT_STATE = 0,
-        SIP_PARSE_STATE,
         IPv4_REDIRECT_STATE,
         IPv6_REDIRECT_STATE
     } state;
-    __u32 int_id; // interface id;
     __u32 is_fragment;
     struct fragment_data cur_frag;
     struct fragment_info cur_info;
@@ -65,10 +63,10 @@ struct ebpf_context
 };
 
 struct bpf_map_def SEC("maps") BPF_CONTEXT_MAP = {
-	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
-	.key_size	= sizeof(int),
+	.type		= BPF_MAP_TYPE_LRU_HASH,
+	.key_size	= sizeof(__u32),
 	.value_size	= sizeof(struct ebpf_context),
-	.max_entries= 1
+	.max_entries= FRAG_INFO_MAP_SIZE
 };
 
 //id -> fragment_info

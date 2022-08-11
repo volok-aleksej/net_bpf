@@ -5,7 +5,5 @@ extern int ipv4_fd;
 extern int ipv6_fd;
 extern int ipv4_rdr_fd;
 extern int ipv6_rdr_fd;
-extern char sipdata[];
-extern int sipdatalen;
 
 #endif/*UNIT_TEST_H*/

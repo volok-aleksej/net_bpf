@@ -31,7 +31,7 @@ struct ipv6_fragment_hdr {
      __s32 id;
 };
 
-int fill_ipv6_packet(int len, __u32& count, int port = 33440)
+int fill_ipv6_packet(int len, __u32& count, int port = 33440, char* buf = 0)
 {
     struct{
         struct ethhdr ethhdr;
@@ -89,7 +89,12 @@ int fill_ipv6_packet(int len, __u32& count, int port = 33440)
             csum = net_checksum(sizeof(struct udphdr), (uint8_t*)udph, &csum);
         }
         for(int j = 0; j < data_len; j++) {
-            data[j] = j&0xff;
+            if(!buf) {
+                data[j] = j&0xff;
+            } else {
+                data[j] = *buf;
+                buf += 1;
+            }
         }
         csum = net_checksum(data_len, (uint8_t*)data, &csum);
         data_size -= data_len;
@@ -100,7 +105,7 @@ int fill_ipv6_packet(int len, __u32& count, int port = 33440)
     return htons(pdata->iphdr.payload_len) + sizeof(ethhdr) + sizeof(struct ipv6hdr);
 }
 
-int fill_ext_ipv6_packet(int len, __u32& count, int port = 33440)
+int fill_ext_ipv6_packet(int len, __u32& count, int port = 33440, char* buf = 0)
 {
     struct{
         struct ethhdr ethhdr;
@@ -167,7 +172,12 @@ int fill_ext_ipv6_packet(int len, __u32& count, int port = 33440)
             csum = net_checksum(sizeof(struct udphdr), (uint8_t*)udph, &csum);
         }
         for(int j = 0; j < data_len; j++) {
-            data[j] = j&0xff;
+            if(!buf) {
+                data[j] = j&0xff;
+            } else {
+                data[j] = *buf;
+                buf += 1;
+            }
         }
         csum = net_checksum(data_len, (uint8_t*)data, &csum);
         data_size -= data_len;

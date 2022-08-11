@@ -67,7 +67,7 @@ static __always_inline __u16 ipv4_csum(void *data_start, int data_size,__u32 *cs
     return htons(~tmp);
 }
 
-static __always_inline int redirect_ip4_fragment(struct ebpf_context* ctx, struct __sk_buff* skb, __u16 if_index, __u32 node_id)
+static __always_inline int redirect_ip4_fragment(struct ebpf_context* ctx, struct __sk_buff* skb, __u16 if_index)
 {
     struct Config* cfg_ = bpf_map_lookup_elem(&BPF_CFG_MAP, &ctx->cur_info.node_id);
     if(!cfg_) return TC_ACT_OK;

@@ -66,6 +66,7 @@ struct Config
             unsigned short mtu;
         } interface;
         struct {
+            unsigned int   is_unit_test;
             unsigned int   node_ids[MAX_INTERFACES];
         } cluster;
     } settings;

@@ -37,6 +37,8 @@ int configure_bpf(int config_map_fd, const char* config_path, bool unit_test)
     memset(&cfg, 0, sizeof(cfg));
     int node_id = 0;
     cfg.type = Config::CLUSTER_SETTINGS;
+    cfg.settings.cluster.is_unit_test = unit_test;
+
     Config cfgi[MAX_INTERFACES];
     int node_ids[MAX_INTERFACES];
     for(int i = 0; i < cfg_size(m_cfg, SECTION_INTERFACE_NAME) && i < MAX_INTERFACES; i++) {

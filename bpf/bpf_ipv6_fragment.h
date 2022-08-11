@@ -75,14 +75,8 @@ static __always_inline int ipv6_is_redirect_partially(const struct ipv6_fragment
     return ipfrag->frag_data & htons(PART_REDIRECT_IP6_FLAG);
 }
 
-static __always_inline int redirect_ip6_fragment(struct ebpf_context* ctx, struct __sk_buff* skb, __u16 if_index, __u32 node_id)
+static __always_inline int redirect_ip6_fragment(struct ebpf_context* ctx, struct __sk_buff* skb, __u16 if_index)
 {
-    if(!ctx->cur_info.checked) {
-        ctx->cur_info.if_index = if_index;
-        ctx->cur_info.node_id = node_id;
-        ctx->cur_info.checked = 1;
-        bpf_map_update_elem(&BPF_FRAG_INFO_MAP, &ctx->cur_id, &ctx->cur_info, BPF_ANY);
-    }
     struct Config* cfg_ = bpf_map_lookup_elem(&BPF_CFG_MAP, &ctx->cur_info.node_id);
     if(!cfg_) return TC_ACT_OK;
 
